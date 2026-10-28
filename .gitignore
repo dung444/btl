@@ -1,0 +1,20 @@
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.streamlit/secrets.toml
+
+# Large source dataset and product images are downloaded separately.
+data/fashion-products.zip
+data/fashion/images/
+
+# Local/generated model artifacts; keep only lightweight evaluation outputs.
+models/*.joblib
+models/*.pkl
+models/*.pickle
+
+# Local editor/OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

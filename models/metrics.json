@@ -1,0 +1,28 @@
+{
+  "products": 15000,
+  "dataset_products": 44412,
+  "train_products": 12000,
+  "test_products": 3000,
+  "main_categories": 6,
+  "sub_categories": 42,
+  "article_types": 130,
+  "feature_count": 7549,
+  "comparison": {
+    "Chỉ tên": {
+      "precision_at_10": 0.7175,
+      "hit_rate_at_10": 0.98,
+      "queries": 200
+    },
+    "Chỉ thuộc tính": {
+      "precision_at_10": 0.6875,
+      "hit_rate_at_10": 0.95,
+      "queries": 200
+    },
+    "Kết hợp": {
+      "precision_at_10": 0.8295,
+      "hit_rate_at_10": 0.995,
+      "queries": 200
+    }
+  },
+  "evaluation_note": "articleType không nằm trong đặc trưng; truy vấn kiểm tra không có trong tập huấn luyện."
+}

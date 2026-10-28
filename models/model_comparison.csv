@@ -1,0 +1,4 @@
+Mô hình,precision_at_10,hit_rate_at_10,queries
+Chỉ tên,0.7175,0.98,200.0
+Chỉ thuộc tính,0.6875,0.95,200.0
+Kết hợp,0.8295,0.995,200.0
