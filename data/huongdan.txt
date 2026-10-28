@@ -1,0 +1,22 @@
+HƯỚNG DẪN TẢI VÀ THIẾT LẬP DỮ LIỆU BÀI TOÁN
+
+Bộ dữ liệu sử dụng: Fashion Product Images (Small) trên Kaggle.
+Kích thước: ~560 MB gồm hơn 44.000 sản phẩm thời trang kèm ảnh thật.
+
+CÁCH TẢI VÀ CÀI ĐẶT:
+-------------------
+Bước 1: Truy cập link Kaggle:
+https://www.kaggle.com/datasets/paramaggarwal/fashion-product-images-small
+
+Bước 2: Nhấn nút "Download" để tải file zip về máy.
+
+Bước 3: Giải nén vào thư mục `data/fashion/` sao cho cấu trúc như sau:
+data/
+└── fashion/
+    ├── styles.csv
+    └── images/
+        ├── 15970.jpg
+        ├── 39386.jpg
+        └── ... (hàng ngàn file ảnh .jpg)
+
+Sau khi hoàn tất, bạn có thể chạy file huấn luyện hoặc mở giao diện demo.

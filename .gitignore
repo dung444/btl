@@ -1,19 +1,25 @@
+# Python & Môi trường ảo
 .venv/
+env/
+venv/
 __pycache__/
 *.py[cod]
 .pytest_cache/
+.ipynb_checkpoints/
+
+# Streamlit
 .streamlit/secrets.toml
 
-# Large source dataset and product images are downloaded separately.
+# Dữ liệu ảnh dung lượng lớn (tải từ Kaggle theo hướng dẫn trong data/huongdan.txt)
 data/fashion-products.zip
 data/fashion/images/
 
-# Local/generated model artifacts; keep only lightweight evaluation outputs.
+# Model & Artifacts dung lượng lớn (sinh ra khi chạy train_model.py)
 models/*.joblib
 models/*.pkl
 models/*.pickle
 
-# Local editor/OS files
+# Hệ điều hành & IDE
 .vscode/
 .idea/
 .DS_Store

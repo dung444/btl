@@ -6,4 +6,5 @@ streamlit>=1.30
 joblib>=1.4
 pillow>=9.2
 matplotlib>=3.7
-
+seaborn>=0.12
+pyarrow

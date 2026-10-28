@@ -1,25 +1,82 @@
-# Hệ thống gợi ý sản phẩm thời trang bằng học máy
+# Hệ thống gợi ý và phân loại sản phẩm thời trang bằng học máy (Machine Learning)
 
-Dự án dùng [Fashion Product Images (Small) trên Kaggle](https://www.kaggle.com/datasets/paramaggarwal/fashion-product-images-small). Bộ dữ liệu có hơn 44.000 sản phẩm với ảnh thật và các trường: giới tính, nhóm hàng, danh mục phụ, loại hàng, màu, mùa, năm, mục đích sử dụng và tên sản phẩm.
+**Sinh viên thực hiện:** Trần Đức Lương  
+**Đề tài:** Ứng dụng mô hình học máy về hệ thống gợi ý sản phẩm thời trang.  
+**Bộ dữ liệu sử dụng:** [Fashion Product Images (Small) trên Kaggle](https://www.kaggle.com/datasets/paramaggarwal/fashion-product-images-small).
 
-## Mô hình
+---
 
-`train_model.py` kết hợp bốn nhóm đặc trưng: TF-IDF từ tên, One-Hot từ thuộc tính phân loại, năm được chuẩn hóa và thống kê màu RGB từ ảnh. Ma trận đặc trưng được chuẩn hóa; Nearest Neighbors dùng cosine similarity để gợi ý. `articleType` không nằm trong đặc trưng và được dùng làm nhãn đánh giá.
+## 📁 Cấu trúc dự án
 
-Dữ liệu được chia 80% huấn luyện và 20% kiểm tra theo nhóm hàng. Bộ mã hóa chỉ học trên tập huấn luyện. Ba mô hình được so sánh: chỉ tên, chỉ thuộc tính và kết hợp. Kết quả Precision@10 và HitRate@10 lưu trong `models/model_comparison.csv`. Sau đánh giá, mô hình kết hợp được học lại trên toàn bộ sản phẩm để phục vụ giao diện.
+Dự án được tổ chức gọn gàng, chuẩn theo cấu trúc đồ án Machine Learning:
 
-## Chạy
-
-```powershell
-pip install -r requirements.txt
-python train_model.py
-python -m streamlit run app.py
+```text
+├── .gitignore                      # Cấu hình bỏ qua môi trường ảo, file tạm và kho ảnh nặng
+├── README.md                       # Tài liệu thuyết minh và hướng dẫn chạy đồ án
+├── requirements.txt                # Danh sách thư viện Python cần thiết
+├── .streamlit/
+│   └── config.toml                 # Cấu hình theme và giao diện Streamlit
+├── app/
+│   └── ML_product_recommender.ipynb # Jupyter Notebook thực nghiệm chi tiết từng bước & huấn luyện model
+├── data/
+│   ├── huongdan.txt                # Hướng dẫn tải và thiết lập tập dữ liệu ảnh từ Kaggle
+│   └── fashion/
+│       ├── styles.csv              # File dữ liệu thông tin sản phẩm
+│       └── images/                 # Kho ảnh sản phẩm (.jpg)
+├── demo/
+│   ├── app.py                      # Ứng dụng Web Demo Streamlit
+│   └── catalog_search.py           # Module tìm kiếm thông minh từ khóa tiếng Việt
+└── models/
+    ├── fashion_model.joblib        # Mô hình KNN & ma trận đặc trưng được lưu sau khi train
+    ├── products.pkl                # Dữ liệu sản phẩm đã tiền xử lý
+    ├── metrics.json                # Kết quả đánh giá mô hình
+    └── model_comparison.csv        # Bảng so sánh độ chính xác của các mô hình
 ```
 
-Mặc định mô hình lấy mẫu 15.000 sản phẩm có ảnh để huấn luyện nhanh trên máy cá nhân. Để huấn luyện toàn bộ sản phẩm, chạy `python train_model.py --full` (cần nhiều thời gian và bộ nhớ hơn).
+---
 
-CSV và ảnh nằm trong `data/fashion/`; tệp huấn luyện nằm trong `models/`. Giao diện cho phép tìm bằng tiếng Việt hoặc tiếng Anh (ví dụ `váy đỏ`, `áo sơ mi`, `giày`), chọn tối đa ba sản phẩm mẫu, lọc theo nhóm hàng, danh mục phụ, loại sản phẩm, đối tượng, màu, mùa, mục đích sử dụng và khoảng năm. Kết quả có ảnh thật, thông tin sản phẩm, lý do trùng thuộc tính, bảng so sánh và nút xuất CSV.
+## 🧠 Các nội dung thực hiện trong Notebook (`app/ML_product_recommender.ipynb`)
 
-`catalog_search.py` chứa từ điển từ khóa tiếng Việt. Có thể bổ sung từ đồng nghĩa vào `VIETNAMESE_TERMS` khi cần tìm thêm các loại hàng mới.
+Notebook được thiết kế theo đúng quy chuẩn các bài tập thực hành học phần Machine Learning:
 
-Chỉ số đánh giá kiểm tra độ phù hợp của sản phẩm gợi ý. Dataset không có lịch sử giao dịch của người dùng để tính khả năng mua hàng thực tế.
+1. **Khám phá dữ liệu:** Đọc file dữ liệu `styles.csv`, kiểm tra kiểu dữ liệu, thông tin thiếu (`isnull().sum()`), thống kê mô tả.
+2. **Làm sạch dữ liệu:** Loại bỏ bản ghi thiếu id, trùng lặp và liên kết với file ảnh thật trong thư mục `images/`.
+3. **Trực quan hóa (EDA):** Biểu đồ phân bố các loại sản phẩm (Article Type) và đối tượng (Gender) bằng Matplotlib.
+4. **Tiền xử lý đặc trưng:**
+   - Mã hóa các thuộc tính chữ (`gender`, `masterCategory`, `subCategory`, `baseColour`, `season`, `usage`) bằng `LabelEncoder`.
+   - Chuẩn hóa thuộc tính số bằng `StandardScaler`.
+   - Chia tập dữ liệu `train_test_split` (80% Train, 20% Test) phân tầng theo nhãn.
+5. **Huấn luyện và so sánh các mô hình học máy:**
+   - **K-Nearest Neighbors (KNN)**
+   - **Decision Tree**
+   - **Random Forest**
+   - **Naive Bayes (GaussianNB)**
+6. **Đánh giá hiệu quả:** Đo lường qua `accuracy_score`, `classification_report`, lập bảng so sánh và vẽ biểu đồ cột.
+7. **Ứng dụng gợi ý sản phẩm:** Sử dụng giải thuật hàng xóm gần nhất của KNN (`kneighbors`) để tìm ra 5 sản phẩm tương tự nhất với sản phẩm mẫu.
+8. **Xuất mô hình:** Lưu model và dữ liệu vào thư mục `models/` bằng `joblib` để Web Demo sử dụng.
+
+---
+
+## 🚀 Hướng dẫn chạy dự án
+
+### 1. Cài đặt các thư viện cần thiết
+Mở terminal trong thư mục dự án và chạy lệnh:
+```powershell
+pip install -r requirements.txt
+```
+
+### 2. Tải và cài đặt dữ liệu ảnh
+Xem hướng dẫn chi tiết tại [data/huongdan.txt](data/huongdan.txt) để tải bộ dữ liệu ảnh từ Kaggle và giải nén vào thư mục `data/fashion/images/`.
+
+### 3. Huấn luyện mô hình (Training)
+Mở file [app/ML_product_recommender.ipynb](app/ML_product_recommender.ipynb) trong VS Code hoặc Jupyter Notebook:
+- Chọn kernel Python 3.
+- Bấm **Run All** để chạy tuần tự tất cả các ô từ đầu đến cuối.
+- Khi chạy xong ô cuối cùng, các file model sẽ tự động được lưu vào thư mục `models/`.
+
+### 4. Khởi chạy Giao diện Web Demo
+Chạy lệnh Streamlit từ terminal:
+```powershell
+streamlit run demo/app.py
+```
+Giao diện web sẽ tự động mở trên trình duyệt, cho phép bạn tìm kiếm sản phẩm theo từ khóa tiếng Việt, chọn sản phẩm mẫu và nhận các gợi ý thời trang tương tự kèm ảnh trực quan.

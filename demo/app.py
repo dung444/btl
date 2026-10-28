@@ -15,7 +15,7 @@ from catalog_search import search_products
 
 
 # Tải các tệp đã huấn luyện một lần để thao tác trên trang diễn ra nhanh.
-ROOT = Path(__file__).resolve().parent
+ROOT = Path(__file__).resolve().parent.parent
 MODEL_DIR = ROOT / "models"
 st.set_page_config(page_title="Gợi ý sản phẩm thời trang", page_icon="👗", layout="wide")
 st.markdown("""
@@ -38,7 +38,7 @@ def load_model(file_versions: tuple[int, int, int]):
 
 
 if not (MODEL_DIR / "fashion_model.joblib").exists():
-    st.error("Chưa có mô hình. Hãy chạy `python train_model.py` rồi tải lại trang.")
+    st.error("Chưa có mô hình. Hãy mở và chạy file `app/ML_product_recommender.ipynb` rồi tải lại trang.")
     st.stop()
 
 file_versions = tuple((MODEL_DIR / filename).stat().st_mtime_ns for filename in [
@@ -46,7 +46,7 @@ file_versions = tuple((MODEL_DIR / filename).stat().st_mtime_ns for filename in 
 ])
 products, matrix, metrics = load_model(file_versions)
 if not {"train_products", "test_products", "comparison"}.issubset(metrics):
-    st.error("Bộ kết quả đánh giá chưa khớp với giao diện. Hãy chạy lại `python train_model.py` rồi tải lại trang.")
+    st.error("Bộ kết quả đánh giá chưa khớp với giao diện. Hãy mở và chạy lại file `app/ML_product_recommender.ipynb` rồi tải lại trang.")
     st.stop()
 st.markdown('<div class="hero"><h1>👗 Hệ thống gợi ý sản phẩm thời trang</h1><p>Khám phá sản phẩm tương tự theo tên, danh mục, màu, mùa, mục đích sử dụng và ảnh thật.</p></div>', unsafe_allow_html=True)
 
